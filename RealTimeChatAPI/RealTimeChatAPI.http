@@ -10,3 +10,13 @@ Content-Type: application/json
 }
 
 ###
+
+POST {{RealTimeChatAPI_HostAddress}}/api/users/login
+Content-Type: application/json
+
+{
+  "Username": "keroles",
+  "Password": "123456"
+}
+
+###

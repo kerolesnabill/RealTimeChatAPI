@@ -1,4 +1,5 @@
-﻿using Application.Users.Commands.RegisterUser;
+﻿using Application.Users.Commands.LoginUser;
+using Application.Users.Commands.RegisterUser;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,5 +16,14 @@ public class UsersController(IMediator mediator) : ControllerBase
     {
         await mediator.Send(command);
         return Ok();
+    }
+
+    [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> LoginUser(LoginUserCommand command)
+    {
+        var token = await mediator.Send(command);
+        return Ok(new {token});
     }
 }

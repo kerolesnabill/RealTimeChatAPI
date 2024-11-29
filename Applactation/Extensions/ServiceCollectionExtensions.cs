@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Application.Services;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,5 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
         services.AddValidatorsFromAssembly(assembly).AddFluentValidationAutoValidation();
         services.AddAutoMapper(assembly);
+
+        services.AddScoped<TokenService>();
     }
 }
