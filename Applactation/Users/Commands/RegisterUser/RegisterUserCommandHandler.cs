@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,8 @@ public class RegisterUserCommandHandler(
     {
         logger.LogInformation("Register a new User {@User}", request);
 
-        // TODO: check if the username already exists
+        var existingUser = await usersRepository.GetUserByUsername(request.Username);
+        if(existingUser != null) throw new UsernameAlreadyUsedException(request.Username);
 
         User user = mapper.Map<User>(request);
         user.CreatedAt = DateTime.UtcNow;

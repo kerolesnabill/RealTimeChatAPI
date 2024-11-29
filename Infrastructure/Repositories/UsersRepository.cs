@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
@@ -10,5 +11,10 @@ internal class UsersRepository(ChatDbContext dbContext) : IUsersRepository
     {
         dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync();
+    }
+    public async Task<User?> GetUserByUsername(string username)
+    {
+        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        return user;
     }
 }
