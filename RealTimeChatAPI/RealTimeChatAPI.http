@@ -1,1 +1,12 @@
 @RealTimeChatAPI_HostAddress = https://localhost:5000
+
+POST {{RealTimeChatAPI_HostAddress}}/api/users/register
+Content-Type: application/json
+
+{
+   "name": "K",
+   "Username": "Kero",
+   "Password": "123456"
+}
+
+###
