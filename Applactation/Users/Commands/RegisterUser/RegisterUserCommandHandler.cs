@@ -4,6 +4,7 @@ using Domain.Exceptions;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using BCrypt.Net;
 
 namespace Application.Users.Commands.RegisterUser;
 
@@ -21,9 +22,7 @@ public class RegisterUserCommandHandler(
 
         User user = mapper.Map<User>(request);
         user.CreatedAt = DateTime.UtcNow;
-
-        // TODO: hash password
-        user.HashedPassword = request.Password;
+        user.HashedPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
 
         await usersRepository.Add(user);
     }
