@@ -1,6 +1,7 @@
 ﻿using Domain.Interfaces;
 using Infrastructure.Persistence;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,5 +18,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IUsersRepository, UsersRepository>();
+        
+        services.AddScoped<IBlobStorageService, BlobStorageService>();
     }
 }

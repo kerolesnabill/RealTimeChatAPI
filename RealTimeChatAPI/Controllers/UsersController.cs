@@ -1,6 +1,7 @@
 ﻿using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.RegisterUser;
 using Application.Users.Commands.UpdateUser;
+using Application.Users.Commands.UpdateUserImage;
 using Application.Users.Commands.UpdateUserPassword;
 using Application.Users.Queries.GetCurrentUser;
 using Application.Users.Queries.GetUserById;
@@ -72,6 +73,15 @@ public class UsersController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUserCommand command)
     {
         await mediator.Send(command);
+        return NoContent();
+    }
+
+    [HttpPatch("me/image")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UpdateCurrentUserImage(IFormFile image)
+    {
+        await mediator.Send(new UpdateUserImageCommand(image));
         return NoContent();
     }
 
