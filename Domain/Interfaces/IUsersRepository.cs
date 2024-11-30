@@ -7,4 +7,5 @@ public interface IUsersRepository
     Task Add(User user);
     Task<User?> GetByUsernameAsync(string username);
     Task<User?> GetByIdAsync(Guid id);
+    Task UpdateAsync(User user);
 }

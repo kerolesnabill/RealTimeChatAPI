@@ -1,5 +1,6 @@
 ﻿using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.RegisterUser;
+using Application.Users.Commands.UpdateUser;
 using Application.Users.Queries.GetCurrentUser;
 using Application.Users.Queries.GetUserById;
 using Application.Users.Queries.GetUserByUsername;
@@ -61,5 +62,15 @@ public class UsersController(IMediator mediator) : ControllerBase
     {
         var user = await mediator.Send(new GetCurrentUserQuery());
         return Ok(user);
+    }
+
+    [HttpPatch("me")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UpdateCurrentUser(UpdateUserCommand command)
+    {
+        await mediator.Send(command);
+        return NoContent();
     }
 }

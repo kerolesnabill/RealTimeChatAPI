@@ -7,14 +7,14 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
     public RegisterUserCommandValidator()
     {
         RuleFor(u => u.Name)
-            .MinimumLength(1)
+            .NotEmpty()
             .MaximumLength(50);
 
         RuleFor(u => u.Username)
             .MinimumLength(3)
             .MaximumLength(20)
-            .Matches("^[a-zA-Z]+$")
-            .WithMessage("Username must contains only alphabetic characters");
+            .Matches("^[a-zA-Z]+[0-9]*$")
+            .WithMessage("Username must contain only alphabetic characters followed by optional numbers");
 
         RuleFor(u => u.Password)
             .MinimumLength(6)
