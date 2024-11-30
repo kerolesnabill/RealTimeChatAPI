@@ -1,5 +1,6 @@
 ﻿using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.RegisterUser;
+using Application.Users.Queries.GetCurrentUser;
 using Application.Users.Queries.GetUserById;
 using Application.Users.Queries.GetUserByUsername;
 using MediatR;
@@ -50,6 +51,15 @@ public class UsersController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetUserByUsername([FromRoute] string username)
     {
         var user = await mediator.Send(new GetUserByUsernameQuery(username));
+        return Ok(user);
+    }
+
+    [HttpGet("me")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var user = await mediator.Send(new GetCurrentUserQuery());
         return Ok(user);
     }
 }
