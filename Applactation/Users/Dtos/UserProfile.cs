@@ -11,5 +11,6 @@ public class UserProfile : Profile
         CreateMap<RegisterUserCommand, User>()
             .ForMember(u => u.Username, 
                 options => options.MapFrom(c => c.Username.ToLower()));;
+        CreateMap<User, UserDto>();
     }
 }

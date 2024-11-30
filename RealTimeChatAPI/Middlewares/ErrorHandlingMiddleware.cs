@@ -1,5 +1,4 @@
-﻿
-using Domain.Exceptions;
+﻿using Domain.Exceptions;
 
 namespace RealTimeChatAPI.Middlewares
 {
@@ -10,6 +9,12 @@ namespace RealTimeChatAPI.Middlewares
             try
             {
                 await next.Invoke(context);
+            }
+            catch (NotFoundException ex)
+            {
+                logger.LogWarning(ex.Message);
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsJsonAsync(new { error = ex.Message });
             }
             catch (UsernameAlreadyUsedException ex)
             {
@@ -23,7 +28,7 @@ namespace RealTimeChatAPI.Middlewares
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsJsonAsync(new { error = ex.Message });
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);
                 context.Response.StatusCode = 400;
