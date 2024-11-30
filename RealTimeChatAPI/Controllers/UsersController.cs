@@ -1,6 +1,7 @@
 ﻿using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.RegisterUser;
 using Application.Users.Commands.UpdateUser;
+using Application.Users.Commands.UpdateUserPassword;
 using Application.Users.Queries.GetCurrentUser;
 using Application.Users.Queries.GetUserById;
 using Application.Users.Queries.GetUserByUsername;
@@ -19,7 +20,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> RegisterUser(RegisterUserCommand command)
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommand command)
     {
         await mediator.Send(command);
         return Ok();
@@ -29,7 +30,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> LoginUser(LoginUserCommand command)
+    public async Task<IActionResult> LoginUser([FromBody] LoginUserCommand command)
     {
         var token = await mediator.Send(command);
         return Ok(new {token});
@@ -68,7 +69,17 @@ public class UsersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> UpdateCurrentUser(UpdateUserCommand command)
+    public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUserCommand command)
+    {
+        await mediator.Send(command);
+        return NoContent();
+    }
+
+    [HttpPatch("me/password")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UpdateCurrentUserPassword([FromBody] UpdateUserPasswordCommand command)
     {
         await mediator.Send(command);
         return NoContent();
