@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using Application.Users;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,5 +17,8 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapper(assembly);
 
         services.AddScoped<TokenService>();
+        
+        services.AddScoped<IUserContext, UserContext>();
+        services.AddHttpContextAccessor();
     }
 }
