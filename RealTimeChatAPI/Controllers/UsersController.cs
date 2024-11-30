@@ -1,6 +1,7 @@
 ﻿using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.RegisterUser;
 using Application.Users.Queries.GetUserById;
+using Application.Users.Queries.GetUserByUsername;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,13 +33,23 @@ public class UsersController(IMediator mediator) : ControllerBase
         return Ok(new {token});
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUserById([FromRoute] Guid id)
     {
         var user = await mediator.Send(new GetUserByIdQuery(id));
+        return Ok(user);
+    }
+
+    [HttpGet("{username}")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUserByUsername([FromRoute] string username)
+    {
+        var user = await mediator.Send(new GetUserByUsernameQuery(username));
         return Ok(user);
     }
 }
