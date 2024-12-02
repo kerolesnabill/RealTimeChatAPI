@@ -2,6 +2,7 @@ using Infrastructure.Extensions;
 using Application.Extensions;
 using RealTimeChatAPI.Middlewares;
 using RealTimeChatAPI.Extensions;
+using Application.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowOrigins");
+
 app.UseHttpsRedirection();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
@@ -24,5 +27,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("ChatHub");
 
 app.Run();

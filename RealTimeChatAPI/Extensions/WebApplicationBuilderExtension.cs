@@ -25,8 +25,32 @@ public static class WebApplicationBuilderExtension
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
-            }); 
-        
+
+                x.RequireHttpsMetadata = false;
+
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var token = context.Request.Query["access_token"];
+                        if(!string.IsNullOrEmpty(token))
+                            context.Token = token;
+
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+        builder.Services.AddCors(options =>
+        {
+            var origins = builder.Configuration.GetSection("Origins").Get<string[]>();
+            options.AddPolicy("AllowOrigins", policyBuilder =>
+                policyBuilder.WithOrigins(origins!)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+        });
+
         builder.Services.AddAuthorization();
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
