@@ -12,8 +12,14 @@ public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : 
         }
         catch (UsernameAlreadyUsedException ex)
         {
-            logger.LogInformation(ex.Message);
+            logger.LogWarning(ex.Message);
             context.Response.StatusCode = 400;
+            await context.Response.WriteAsJsonAsync(new { error = ex.Message });
+        }
+        catch (InvalidLoginException ex)
+        {
+            logger.LogWarning(ex.Message);
+            context.Response.StatusCode = 401;
             await context.Response.WriteAsJsonAsync(new { error = ex.Message });
         }
         catch (Exception ex)

@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using RealTimeChatAPI.Data;
 using RealTimeChatAPI.Data.Repositories;
+using RealTimeChatAPI.Helpers;
 using RealTimeChatAPI.Middlewares;
 
 namespace RealTimeChatAPI.Extensions;
@@ -21,6 +22,8 @@ public static class ServiceCollectionExtensions
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
         services.AddValidatorsFromAssembly(assembly).AddFluentValidationAutoValidation();
         services.AddAutoMapper(assembly);
+
+        services.AddScoped<JwtHelper>();
 
         // Data(Infrastructure) services
         services.AddDbContext<RealTimeChatDbContext>(options =>

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using RealTimeChatAPI.Models;
-using RealTimeChatAPI.Services.Users.RegisterUser;
+using RealTimeChatAPI.Services.Users.Commands.RegisterUser;
 
 namespace RealTimeChatAPI.Helpers;
 
