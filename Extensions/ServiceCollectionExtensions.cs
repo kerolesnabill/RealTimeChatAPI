@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 using RealTimeChatAPI.Data;
+using RealTimeChatAPI.Data.Repositories;
 
 namespace RealTimeChatAPI.Extensions;
 
@@ -10,10 +13,20 @@ public static class ServiceCollectionExtensions
         services.AddControllers();
         services.AddOpenApi();
 
+        // Application services
+        var assembly = typeof(ServiceCollectionExtensions).Assembly;
+
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+        services.AddValidatorsFromAssembly(assembly).AddFluentValidationAutoValidation();
+        services.AddAutoMapper(assembly);
+
+        // Data(Infrastructure) services
         services.AddDbContext<RealTimeChatDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("RealTimeChatDb"))
                 .EnableSensitiveDataLogging();
         });
+
+        services.AddScoped<IUsersRepository, UsersRepository>();
     }
 }
