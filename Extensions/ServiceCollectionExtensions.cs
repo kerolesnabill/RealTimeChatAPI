@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using RealTimeChatAPI.Data;
 using RealTimeChatAPI.Data.Repositories;
+using RealTimeChatAPI.Middlewares;
 
 namespace RealTimeChatAPI.Extensions;
 
@@ -10,6 +11,7 @@ public static class ServiceCollectionExtensions
 {
     public static void AddServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<ErrorHandlingMiddleware>();
         services.AddControllers();
         services.AddOpenApi();
 
