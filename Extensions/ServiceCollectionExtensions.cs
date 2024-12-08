@@ -7,6 +7,7 @@ using RealTimeChatAPI.Data;
 using RealTimeChatAPI.Data.Repositories;
 using RealTimeChatAPI.Helpers;
 using RealTimeChatAPI.Middlewares;
+using RealTimeChatAPI.Services.Users;
 using System.Text;
 
 namespace RealTimeChatAPI.Extensions;
@@ -55,6 +56,9 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapper(assembly);
 
         services.AddScoped<JwtHelper>();
+
+        services.AddScoped<IUserContext, UserContext>();
+        services.AddHttpContextAccessor();
 
         // Data(Infrastructure) services
         services.AddDbContext<RealTimeChatDbContext>(options =>
