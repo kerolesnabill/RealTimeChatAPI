@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealTimeChatAPI.Services.Users.Commands.LoginUser;
 using RealTimeChatAPI.Services.Users.Commands.RegisterUser;
+using RealTimeChatAPI.Services.Users.Commands.UpdateUser;
 using RealTimeChatAPI.Services.Users.Queries.GetCurrentUser;
 using RealTimeChatAPI.Services.Users.Queries.GetUserById;
 using RealTimeChatAPI.Services.Users.Queries.GetUserByUsername;
@@ -62,5 +63,15 @@ public class UsersController(IMediator mediator) : ControllerBase
     {
         var user = await mediator.Send(new GetCurrentUserQuery());
         return Ok(user);
+    }
+
+    [HttpPatch("me")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UpdateCurrentUser(UpdateUserCommand command)
+    {
+        await mediator.Send(command);
+        return NoContent();
     }
 }
