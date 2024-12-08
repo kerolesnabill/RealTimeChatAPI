@@ -11,6 +11,11 @@ internal class UsersRepository(RealTimeChatDbContext dbContext) : IUsersReposito
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task<User?> GetByIdAsync(Guid id)
+    {
+        return await dbContext.Users.SingleOrDefaultAsync(x => x.Id == id);
+    }
+
     public async Task<User?> GetUserByUsername(string username)
     {
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);

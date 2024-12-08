@@ -10,6 +10,12 @@ public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : 
         {
             await next.Invoke(context);
         }
+        catch (NotFoundException ex)
+        {
+            logger.LogWarning(ex.Message);
+            context.Response.StatusCode = 404;
+            await context.Response.WriteAsJsonAsync(new { error = ex.Message });
+        }
         catch (UsernameAlreadyUsedException ex)
         {
             logger.LogWarning(ex.Message);
