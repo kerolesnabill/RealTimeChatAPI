@@ -37,6 +37,16 @@ public static class ServiceCollectionExtensions
         services.AddControllers();
         services.AddOpenApi();
 
+        services.AddCors(options =>
+        {
+            var origins = configuration.GetSection("Origins").Get<string[]>();
+            options.AddPolicy("AllowOrigins", policyBuilder =>
+                policyBuilder.WithOrigins(origins!)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+        });
+
         // Application services
         var assembly = typeof(ServiceCollectionExtensions).Assembly;
 
