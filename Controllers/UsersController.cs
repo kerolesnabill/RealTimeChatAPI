@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealTimeChatAPI.Services.Users.Commands.LoginUser;
 using RealTimeChatAPI.Services.Users.Commands.RegisterUser;
+using RealTimeChatAPI.Services.Users.Queries.GetCurrentUser;
 using RealTimeChatAPI.Services.Users.Queries.GetUserById;
 using RealTimeChatAPI.Services.Users.Queries.GetUserByUsername;
 
@@ -51,6 +52,15 @@ public class UsersController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetUserByUsername([FromRoute] string username)
     {
         var user = await mediator.Send(new GetUserByUsernameQuery(username));
+        return Ok(user);
+    }
+
+    [HttpGet("me")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var user = await mediator.Send(new GetCurrentUserQuery());
         return Ok(user);
     }
 }
