@@ -14,7 +14,7 @@ public class LoginUserCommandHandler(
     {
         logger.LogInformation("Login user: {Username}", request.Username);
 
-        var user = await usersRepository.GetUserByUsername(request.Username)
+        var user = await usersRepository.GetByUsernameAsync(request.Username)
             ?? throw new InvalidLoginException();
 
         bool correctPass = BCrypt.Net.BCrypt

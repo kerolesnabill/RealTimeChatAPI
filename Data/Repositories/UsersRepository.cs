@@ -16,7 +16,7 @@ internal class UsersRepository(RealTimeChatDbContext dbContext) : IUsersReposito
         return await dbContext.Users.SingleOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<User?> GetUserByUsername(string username)
+    public async Task<User?> GetByUsernameAsync(string username)
     {
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
         return user;

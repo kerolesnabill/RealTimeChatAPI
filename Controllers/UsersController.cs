@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RealTimeChatAPI.Services.Users.Commands.LoginUser;
 using RealTimeChatAPI.Services.Users.Commands.RegisterUser;
 using RealTimeChatAPI.Services.Users.Queries.GetUserById;
+using RealTimeChatAPI.Services.Users.Queries.GetUserByUsername;
 
 namespace RealTimeChatAPI.Controllers;
 
@@ -40,6 +41,16 @@ public class UsersController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetUserById([FromRoute] Guid id)
     {
         var user = await mediator.Send(new GetUserByIdQuery(id));
+        return Ok(user);
+    }
+
+    [HttpGet("{username}")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUserByUsername([FromRoute] string username)
+    {
+        var user = await mediator.Send(new GetUserByUsernameQuery(username));
         return Ok(user);
     }
 }

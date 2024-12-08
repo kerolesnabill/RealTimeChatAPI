@@ -15,7 +15,7 @@ public class RegisterUserCommandHandler(
     {
         logger.LogInformation("Register a new User {@User}", request);
 
-        var existingUser = await usersRepository.GetUserByUsername(request.Username);
+        var existingUser = await usersRepository.GetByUsernameAsync(request.Username);
         if (existingUser != null) throw new UsernameAlreadyUsedException(request.Username);
 
         User user = mapper.Map<User>(request);
