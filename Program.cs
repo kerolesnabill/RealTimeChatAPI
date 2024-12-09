@@ -18,6 +18,8 @@ app.UseCors("AllowOrigins");
 
 //app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseAuthentication();

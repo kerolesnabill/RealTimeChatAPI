@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RealTimeChatAPI.Services.Users.Commands.LoginUser;
 using RealTimeChatAPI.Services.Users.Commands.RegisterUser;
 using RealTimeChatAPI.Services.Users.Commands.UpdateUser;
+using RealTimeChatAPI.Services.Users.Commands.UpdateUserImage;
 using RealTimeChatAPI.Services.Users.Commands.UpdateUserPassword;
 using RealTimeChatAPI.Services.Users.Queries.GetCurrentUser;
 using RealTimeChatAPI.Services.Users.Queries.GetUserById;
@@ -71,6 +72,15 @@ public class UsersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> UpdateCurrentUser(UpdateUserCommand command)
+    {
+        await mediator.Send(command);
+        return NoContent();
+    }
+
+    [HttpPatch("me/image")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UpdateCurrentUserImage(UpdateUserImageCommand command)
     {
         await mediator.Send(command);
         return NoContent();
