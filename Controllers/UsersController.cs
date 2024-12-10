@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RealTimeChatAPI.Services.Users.Commands.DeleteUserImage;
 using RealTimeChatAPI.Services.Users.Commands.LoginUser;
 using RealTimeChatAPI.Services.Users.Commands.RegisterUser;
 using RealTimeChatAPI.Services.Users.Commands.UpdateUser;
@@ -83,6 +84,15 @@ public class UsersController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> UpdateCurrentUserImage(UpdateUserImageCommand command)
     {
         await mediator.Send(command);
+        return NoContent();
+    }
+
+    [HttpDelete("me/image")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> DeleteCurrentUserImage()
+    {
+        await mediator.Send(new DeleteUserImageCommand());
         return NoContent();
     }
 
