@@ -31,7 +31,21 @@ public static class ServiceCollectionExtensions
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
-            });
+
+                x.RequireHttpsMetadata = false;
+
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var token = context.Request.Query["access_token"];
+                        if (!string.IsNullOrEmpty(token))
+                            context.Token = token;
+
+                        return Task.CompletedTask;
+                    }
+                };
+    });
 
         services.AddAuthorization();
         services.AddScoped<ErrorHandlingMiddleware>();
@@ -59,6 +73,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUserContext, UserContext>();
         services.AddHttpContextAccessor();
+
+        services.AddSignalR();
 
         // Data(Infrastructure) services
         services.AddDbContext<RealTimeChatDbContext>(options =>

@@ -1,4 +1,5 @@
 using RealTimeChatAPI.Extensions;
+using RealTimeChatAPI.Hubs;
 using RealTimeChatAPI.Middlewares;
 using Scalar.AspNetCore;
 
@@ -26,5 +27,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("ChatHub");
 
 app.Run();
