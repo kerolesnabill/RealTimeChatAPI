@@ -85,5 +85,6 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IChatsRepository, ChatsRepository>();
+        services.AddScoped<IMessagesRepository, MessagesRepository>();
     }
 }

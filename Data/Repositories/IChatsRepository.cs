@@ -6,4 +6,5 @@ public interface IChatsRepository
 {
     Task<Chat> CreateAsync(Chat chat);
     Task<Chat?> GetByUsersAsync(Guid firstUserId, Guid secondUserId);
+    Task<Chat?> GetByIdAsync(Guid id);
 }

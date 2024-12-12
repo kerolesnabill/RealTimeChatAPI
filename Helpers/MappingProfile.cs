@@ -25,5 +25,7 @@ public class MappingProfile : Profile
                 options.Condition(c => c.Username?.ToLower() != null));
 
         CreateMap<Chat, ChatDto>();
+
+        CreateMap<Message, MessageDto>();
     }
 }

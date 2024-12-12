@@ -12,6 +12,12 @@ internal class ChatsRepository(RealTimeChatDbContext dbContext) : IChatsReposito
         return chat;
     }
 
+    public async Task<Chat?> GetByIdAsync(Guid id)
+    {
+        return await dbContext.Chats
+            .Include(c => c.ChatUsers).SingleOrDefaultAsync(c => c.Id == id);
+    }
+
     public async Task<Chat?> GetByUsersAsync(Guid firstUserId, Guid secondUserId)
     {
         return await dbContext.Chats
