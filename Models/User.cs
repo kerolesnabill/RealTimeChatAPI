@@ -9,4 +9,8 @@ public class User
     public string? Image { get; set; }
     public string? About { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public ICollection<Message> SentMessages { get; set; } = [];
+    public ICollection<MessageStatus> MessageStatuses { get; set; } = [];
+    public ICollection<ChatUser> ChatUsers { get; set; } = [];
 }
