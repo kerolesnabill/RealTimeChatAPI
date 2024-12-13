@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RealTimeChatAPI.DTOs;
 using RealTimeChatAPI.Models;
 
 namespace RealTimeChatAPI.Data.Repositories;
@@ -30,5 +31,22 @@ internal class ChatsRepository(RealTimeChatDbContext dbContext) : IChatsReposito
                      &&
                      (c.IsGroupChat == null || c.IsGroupChat == false)
                      ).FirstOrDefaultAsync();
+    }
+
+    public async Task<IEnumerable<ChatDto>> GetChatsByUserIdAsync(Guid userId)
+    {
+        return await dbContext.ChatUsers
+            .Where(cu => cu.UserId == userId)
+            .Select(cu => new ChatDto
+            {
+                Id = cu.ChatId,
+                IsGroupChat = cu.Chat.IsGroupChat,
+                Name = cu.Chat.IsGroupChat == true ? cu.Chat.Name : 
+                    cu.Chat.ChatUsers.SingleOrDefault(cu => cu.UserId != userId)!.User.Name,
+                Image = cu.Chat.IsGroupChat == true ? cu.Chat.Image :
+                    cu.Chat.ChatUsers.SingleOrDefault(cu => cu.UserId != userId)!.User.Image,
+                LastMessage = cu.Chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault().Content,
+                LastMessageTime = cu.Chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault().CreatedAt,
+            }).ToListAsync();
     }
 }

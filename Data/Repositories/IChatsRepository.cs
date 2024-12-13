@@ -1,4 +1,5 @@
-﻿using RealTimeChatAPI.Models;
+﻿using RealTimeChatAPI.DTOs;
+using RealTimeChatAPI.Models;
 
 namespace RealTimeChatAPI.Data.Repositories;
 
@@ -7,4 +8,5 @@ public interface IChatsRepository
     Task<Chat> CreateAsync(Chat chat);
     Task<Chat?> GetByUsersAsync(Guid firstUserId, Guid secondUserId);
     Task<Chat?> GetByIdAsync(Guid id);
+    Task<IEnumerable<ChatDto>> GetChatsByUserIdAsync(Guid userId);
 }
