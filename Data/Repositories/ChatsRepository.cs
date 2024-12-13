@@ -19,6 +19,12 @@ internal class ChatsRepository(RealTimeChatDbContext dbContext) : IChatsReposito
             .Include(c => c.ChatUsers).SingleOrDefaultAsync(c => c.Id == id);
     }
 
+    public async Task<Chat?> GetByIdWithMessagesAsync(Guid id)
+    {
+        return await dbContext.Chats
+            .Include(c => c.Messages).SingleOrDefaultAsync(c => c.Id == id);
+    }
+
     public async Task<Chat?> GetByUsersAsync(Guid firstUserId, Guid secondUserId)
     {
         return await dbContext.Chats
@@ -48,5 +54,13 @@ internal class ChatsRepository(RealTimeChatDbContext dbContext) : IChatsReposito
                 LastMessage = cu.Chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault().Content,
                 LastMessageTime = cu.Chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault().CreatedAt,
             }).ToListAsync();
+    }
+
+    public async Task<bool> IsAChatMember(Guid chatId, Guid userId)
+    {
+        var chatUser = await dbContext.ChatUsers
+            .Where(cu => cu.ChatId == chatId && cu.UserId == userId)
+            .FirstOrDefaultAsync();
+        return chatUser != null;
     }
 }
