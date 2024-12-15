@@ -86,7 +86,7 @@ public class ChatHub(
             var isValidId = Guid.TryParse(chatId, out var chatGuid);
             if (!isValidId) throw new Exception("Invalid chat Id");
 
-            if (!string.IsNullOrWhiteSpace(message))
+            if (string.IsNullOrWhiteSpace(message))
                 throw new Exception("Message is empty");
 
             var chat = await chatsRepository.GetByIdAsync(chatGuid)
@@ -103,7 +103,7 @@ public class ChatHub(
                 Content = message
             });
 
-            var jsonMsg = JsonSerializer.Serialize(mapper.Map<MessageDto>(message));
+            var jsonMsg = JsonSerializer.Serialize(mapper.Map<MessageDto>(msg));
 
             if (chat.IsGroupChat == true)
                 await Clients.Group(chat.Id.ToString()).SendAsync("Message", jsonMsg);
