@@ -9,4 +9,7 @@ public class User
     public string? Image { get; set; }
     public string? About { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public IEnumerable<Message> SentMessages { get; set; } = [];
+    public IEnumerable<Message> ReceivedMessages { get; set; } = [];
 }
