@@ -8,4 +8,5 @@ public class ChatRoomDto
     public string? Image { get; set; } = default!;
     public string LastMessage { get; set; } = default!; 
     public DateTime LastMessageTime { get; set; }
+    public int UnreadMessagesCount { get; set; }
 }

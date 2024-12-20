@@ -35,16 +35,17 @@ internal class MessagesRepository(RealTimeChatDbContext dbContext) : IMessagesRe
             })
             .Select(g => new
             {
-                LatestMessage = g.OrderByDescending(m => m.CreatedAt).FirstOrDefault(),
                 g.Key.Participant1,
-                g.Key.Participant2
+                g.Key.Participant2,
+                LatestMessage = g.OrderByDescending(m => m.CreatedAt).FirstOrDefault(),
+                UnreadMessagesCount = g.Count(m => m.SenderId != userId && m.ReadAt == null)
             })
             .ToListAsync();
 
         var chatRoomDtos = chatRooms.Select(x =>
         {
             var isUserParticipant1 = x.LatestMessage!.SenderId == userId;
-            var otherParticipantId = isUserParticipant1 ? x.Participant2 : x.Participant1;
+            var otherParticipantId = x.Participant1 == userId? x.Participant2 : x.Participant1;
             var latestMessage = x.LatestMessage;
 
             return new ChatRoomDto
@@ -54,7 +55,8 @@ internal class MessagesRepository(RealTimeChatDbContext dbContext) : IMessagesRe
                 Name = isUserParticipant1 ? latestMessage.Recipient.Name : latestMessage.Sender.Name,
                 Image = isUserParticipant1 ? latestMessage.Recipient.Image : latestMessage.Sender.Image,
                 LastMessage = latestMessage.Content,
-                LastMessageTime = latestMessage.CreatedAt
+                LastMessageTime = latestMessage.CreatedAt,
+                UnreadMessagesCount = x.UnreadMessagesCount
             };
         }).ToList();
 
