@@ -12,6 +12,19 @@ internal class MessagesRepository(RealTimeChatDbContext dbContext) : IMessagesRe
         await dbContext.SaveChangesAsync();
         return message;
     }
+
+    public async Task<Message?> GetByIdAsync(Guid id)
+    {
+        return await dbContext.Messages.SingleOrDefaultAsync(m => m.Id == id);
+    }
+
+    public async Task<Message> UpdateAsync(Message message)
+    {
+        dbContext.Update(message);
+        await dbContext.SaveChangesAsync();
+        return message;
+    }
+
     public async Task<IEnumerable<Message>> GetMessagesAsync(Guid userId1, Guid userId2)
     {
         return await dbContext.Messages
@@ -62,8 +75,4 @@ internal class MessagesRepository(RealTimeChatDbContext dbContext) : IMessagesRe
 
         return chatRoomDtos;
     }
-
-
-
-
 }

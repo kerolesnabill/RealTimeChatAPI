@@ -61,10 +61,38 @@ public class ChatHub(
 
             var jsonMsg = JsonSerializer.Serialize(mapper.Map<MessageDto>(msg));
 
-            await Clients.Caller.SendAsync("Message", jsonMsg);
+            await Clients.Caller.SendAsync("SendMessage", jsonMsg);
 
             if (userConnections.TryGetValue(recipient.Id, out var connectionId))
-                await Clients.Client(connectionId).SendAsync("Message", jsonMsg);
+                await Clients.Client(connectionId).SendAsync("ReceiveMessage", jsonMsg);
+        }
+        catch (Exception ex)
+        {
+            await Clients.Caller.SendAsync("Error", ex.Message);
+        }
+    }
+
+    public async Task DeliveredMessage(string messageId)
+    {
+        try
+        {
+            var isValidId = Guid.TryParse(messageId, out var msgId);
+            if (!isValidId) throw new Exception("Invalid message Id");
+
+            var message = await messagesRepository.GetByIdAsync(msgId)
+                ?? throw new NotFoundException(nameof(Message), messageId);
+
+            var userId = Guid.Parse(Context.UserIdentifier!);
+            if (message.RecipientId != userId) return;
+
+            if(message.DeliveredAt == null)
+                message.DeliveredAt = DateTime.UtcNow;
+
+            var msg = await messagesRepository.UpdateAsync(message);
+            var jsonMsg = JsonSerializer.Serialize(mapper.Map<MessageDto>(msg));
+
+            if (userConnections.TryGetValue(message.SenderId, out var connectionId))
+                await Clients.Client(connectionId).SendAsync("MessageStatus", jsonMsg);
         }
         catch (Exception ex)
         {
