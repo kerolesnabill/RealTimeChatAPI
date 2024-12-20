@@ -1,9 +1,7 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Hosting;
 using RealTimeChatAPI.Data.Repositories;
 using RealTimeChatAPI.Exceptions;
 using RealTimeChatAPI.Models;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace RealTimeChatAPI.Services.Users.Commands.UpdateUserImage;
 
@@ -40,8 +38,7 @@ public class UpdateUserImageCommandHandler(
         using (var stream = new FileStream(filePath, FileMode.Create))
             await request.Image.CopyToAsync(stream);
 
-        var imagePath = Path.Combine("images", fileName);
-        user.Image = imagePath;
+        user.Image = $"images/{fileName}";
         await usersRepository.UpdateAsync(user);
     }
 }

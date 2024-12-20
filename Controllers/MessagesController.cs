@@ -11,7 +11,7 @@ namespace RealTimeChatAPI.Controllers;
 public class MessagesController(IMediator mediator) : ControllerBase
 {
     [HttpGet("{userId}")]
-    public async Task<IActionResult> GetMessage([FromRoute] GetMessagesQuery query)
+    public async Task<IActionResult> GetMessages([FromRoute] GetMessagesQuery query)
     {
         var messages = await mediator.Send(query);
         return Ok(messages);

@@ -10,6 +10,6 @@ public class User
     public string? About { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public IEnumerable<Message> SentMessages { get; set; } = [];
-    public IEnumerable<Message> ReceivedMessages { get; set; } = [];
+    public ICollection<Message> SentMessages { get; set; } = [];
+    public ICollection<Message> ReceivedMessages { get; set; } = [];
 }
