@@ -75,4 +75,18 @@ internal class MessagesRepository(RealTimeChatDbContext dbContext) : IMessagesRe
 
         return chatRoomDtos;
     }
+
+    public async Task<IEnumerable<Message>> ReadUnreadMessagesAsync(Guid userId, Guid userChatId)
+    {
+        var messages = await dbContext.Messages
+            .Where(m => m.RecipientId == userId && m.SenderId == userChatId && m.ReadAt == null)
+            .ToListAsync();
+
+        foreach (var message in messages)
+            message.ReadAt = DateTime.UtcNow;
+
+        dbContext.Messages.UpdateRange(messages);
+        await dbContext.SaveChangesAsync();
+        return messages;
+    }
 }

@@ -85,14 +85,39 @@ public class ChatHub(
             var userId = Guid.Parse(Context.UserIdentifier!);
             if (message.RecipientId != userId) return;
 
-            if(message.DeliveredAt == null)
+            if (message.DeliveredAt == null)
                 message.DeliveredAt = DateTime.UtcNow;
 
             var msg = await messagesRepository.UpdateAsync(message);
-            var jsonMsg = JsonSerializer.Serialize(mapper.Map<MessageDto>(msg));
+            var jsonMsg = "[" + JsonSerializer.Serialize(mapper.Map<MessageDto>(msg)) + "]";
+            
 
             if (userConnections.TryGetValue(message.SenderId, out var connectionId))
                 await Clients.Client(connectionId).SendAsync("MessageStatus", jsonMsg);
+        }
+        catch (Exception ex)
+        {
+            await Clients.Caller.SendAsync("Error", ex.Message);
+        }
+    }
+
+    public async Task ReadMessages(string userChatId)
+    {
+        try
+        {
+            var isValidId = Guid.TryParse(userChatId, out var userChatGuid);
+            if (!isValidId) throw new Exception("Invalid user chat Id");
+
+            var user = await usersRepository.GetByIdAsync(userChatGuid)
+                ?? throw new NotFoundException(nameof(User), userChatId);
+
+            var userId = Guid.Parse(Context.UserIdentifier!);
+            var messages = await messagesRepository.ReadUnreadMessagesAsync(userId, userChatGuid);
+
+            var jsonMessages = JsonSerializer.Serialize(mapper.Map<IEnumerable<MessageDto>>(messages));
+
+            if (userConnections.TryGetValue(user.Id, out var connectionId))
+                await Clients.Client(connectionId).SendAsync("MessageStatus", jsonMessages);
         }
         catch (Exception ex)
         {
