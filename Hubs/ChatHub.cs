@@ -27,6 +27,7 @@ public class ChatHub(
 
         var userId = Guid.Parse(Context.UserIdentifier!);
         userConnections.TryAdd(userId, Context.ConnectionId);
+        await DeliveredAllMessages();
         await base.OnConnectedAsync();
     }
 
@@ -122,6 +123,20 @@ public class ChatHub(
         catch (Exception ex)
         {
             await Clients.Caller.SendAsync("Error", ex.Message);
+        }
+    }
+
+    private async Task DeliveredAllMessages()
+    {
+        var userId = Guid.Parse(Context.UserIdentifier!);
+        var messages = await messagesRepository.DeliveredAllMessagesAsync(userId);
+
+        var groups = messages.GroupBy(m => m.SenderId);
+        foreach (var group in groups)
+        {
+            var jsonMessages = JsonSerializer.Serialize(mapper.Map<IEnumerable<MessageDto>>(group));
+            if (userConnections.TryGetValue(group.First().SenderId, out var connectionId))
+                await Clients.Client(connectionId).SendAsync("MessageStatus", jsonMessages);
         }
     }
 }

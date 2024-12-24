@@ -89,4 +89,17 @@ internal class MessagesRepository(RealTimeChatDbContext dbContext) : IMessagesRe
         await dbContext.SaveChangesAsync();
         return messages;
     }
+
+    public async Task<IEnumerable<Message>> DeliveredAllMessagesAsync(Guid userId)
+    {
+        var messages = await dbContext.Messages
+            .Where(m => m.RecipientId == userId && m.DeliveredAt == null)
+            .ToListAsync();
+
+        messages.ForEach(m => m.DeliveredAt = DateTime.UtcNow);
+
+        dbContext.Messages.UpdateRange(messages);
+        await dbContext.SaveChangesAsync();
+        return messages;
+    }
 }
