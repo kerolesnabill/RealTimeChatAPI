@@ -126,6 +126,35 @@ public class ChatHub(
         }
     }
 
+    public async Task DeliveredAndReadMessage(string messageId)
+    {
+        try
+        {
+            var isValidId = Guid.TryParse(messageId, out var msgId);
+            if (!isValidId) throw new Exception("Invalid message Id");
+
+            var message = await messagesRepository.GetByIdAsync(msgId)
+                ?? throw new NotFoundException(nameof(Message), messageId);
+
+            var userId = Guid.Parse(Context.UserIdentifier!);
+            if (message.RecipientId != userId) return;
+
+            if (message.DeliveredAt == null)
+                message.DeliveredAt = message.ReadAt = DateTime.UtcNow;
+
+            var msg = await messagesRepository.UpdateAsync(message);
+            var jsonMsg = "[" + JsonSerializer.Serialize(mapper.Map<MessageDto>(msg)) + "]";
+
+
+            if (userConnections.TryGetValue(message.SenderId, out var connectionId))
+                await Clients.Client(connectionId).SendAsync("MessageStatus", jsonMsg);
+        }
+        catch (Exception ex)
+        {
+            await Clients.Caller.SendAsync("Error", ex.Message);
+        }
+    }
+
     private async Task DeliveredAllMessages()
     {
         var userId = Guid.Parse(Context.UserIdentifier!);
