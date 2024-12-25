@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RealTimeChatAPI.Data;
 using RealTimeChatAPI.Data.Repositories;
+using RealTimeChatAPI.Data.Seeders;
 using RealTimeChatAPI.Helpers;
 using RealTimeChatAPI.Middlewares;
 using RealTimeChatAPI.Services.Users;
@@ -85,5 +86,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IMessagesRepository, MessagesRepository>();
+
+        services.AddScoped<Seeder>();
     }
 }
